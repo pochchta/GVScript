@@ -7,10 +7,12 @@
 // @include https://godville.net/superhero
 // ==/UserScript==
 
-var delay_counter = 0;
-const DELAY_SET = 10;
 
+const DELAY_SET = 10;
+const TOP = 0, BOTTOM = 1, RIGHT = 2;
 const HEALTH_SET = 30, MONEY_SET = 1500;
+
+var delay_counter = 0;
 var arr = {
   //[название], [подпись], [значение],
    TIME: ["Прошло времени", "создан", "таймер между событиями"],
@@ -35,6 +37,13 @@ function get_elem_idcn(id, cn){
 }
 
 var click_state = 0, start_date = new Date();
+var last_date = new Date(parseInt(localStorage.getItem('last_date')));
+if (last_date !== null) {
+    start_date = last_date;
+} else {
+    localStorage.setItem('last_date', +start_date);
+}
+
 function inic(){
     if ( ! document.getElementById("my_test_block") ) {
         arr.TIME[1] = start_date.getHours() + ":" + start_date.getMinutes() + ":" + start_date.getSeconds() + " - (" + start_date.getDate() + "." + (+start_date.getMonth()+1) +")";
@@ -52,15 +61,6 @@ function inic(){
         div_block.id = "my_test_block";
         div_block.className = "block";
         var div_block_h = div_equ_block_h.cloneNode(true);
-
-        div_block_h.onclick = function(){
-            click_state = click_state ^ 1;
-            if ( click_state && get_elem_idcn("my_test_block", "block_title") ) {
-                get_elem_idcn("my_test_block", "block_title").style.color = "red";
-            } else {
-                get_elem_idcn("my_test_block", "block_title").style.color = "";
-            }
-        };
 
         (div_block_h.getElementsByClassName("block_title"))[0].innerHTML = "My_test_block ))";
         div_block.appendChild(div_block_h);
@@ -82,6 +82,20 @@ function inic(){
         div_block_content.appendChild(div_block_end_line);
         document.getElementById("left_block").insertBefore( div_block , document.getElementById("pet") );
 
+        div_block_h.onclick = function(){
+            click_state = click_state ^ 1;
+            if ( click_state && get_elem_idcn("my_test_block", "block_title") ) {
+                get_elem_idcn("my_test_block", "block_title").style.color = "red";
+            } else {
+                get_elem_idcn("my_test_block", "block_title").style.color = "";
+            }
+        }
+
+        document.getElementById('my_line_0').onclick = function() {
+            start_date = new Date();
+            localStorage.setItem('last_date', +start_date);
+            arr.TIME[1] = start_date.getHours() + ":" + start_date.getMinutes() + ":" + start_date.getSeconds() + " - (" + start_date.getDate() + "." + (+start_date.getMonth()+1) +")";
+        }
     }
 }
 
